@@ -964,7 +964,7 @@ Linux.ActiveNotifications = {}
 Linux.NotificationCounter = 0
 Linux.FrameTransparency = 0.78
 Linux.FrameColor = Color3.fromRGB(60, 60, 60)
-Linux.MainFrameColor = Color3.fromRGB(12, 12, 12)
+Linux.MainFrameColor = Color3.fromRGB(7, 7, 7)
 Linux.ToggleIconAssetId = "rbxassetid://99020804096711"
 Linux.IgnoredElements = {}
 Linux.SavedConfigs = {}
@@ -2184,7 +2184,7 @@ local Main = Linux.Instance("Frame", {
 Parent = LinuxUI,
 BackgroundColor3 = Linux.MainFrameColor,
 BorderColor3 = Color3.fromRGB(39, 39, 42),
-BackgroundTransparency = 0.20,
+BackgroundTransparency = 0.18,
 BorderSizePixel = 0,
 Size = UDim2.new(0, 0, 0, 0),
 Position = UDim2.new(0.5, 0, 0.5, 0),
@@ -5538,162 +5538,11 @@ table.insert(Tabs[tabIndex].Elements, element)
 table.insert(AllElements, { Tab = tabIndex, Element = element })
 globalConnectionManager:elementLoaded()
 CheckEmptyState()
-	return {
-		Instance = ParagraphFrame,
-		SetTitle = SetTitle,
-		SetContent = SetContent
-	}
-end
-function TabElements.Image(config)
-	local targetContainer, targetListLayout = getTargetContainer()
-	local currentElementOrder = updateElementOrder(false)
-	local imageId = config.Image or ""
-	local imageSize = config.Size or UDim2.new(1, -20, 0, 200)
-	local titleText = config.Title or ""
-	local titleEnabled = titleText ~= ""
-	local titleSize = config.TitleSize or 16
-	local titleColor = config.TitleColor or Color3.fromRGB(230, 230, 240)
-	local titlePosition = config.TitlePosition or "Top"
-	local backgroundColor = config.BackgroundColor or Linux.FrameColor
-	local backgroundTransparency = config.BackgroundTransparency or Linux.FrameTransparency
-	local cornerRadius = config.CornerRadius or 6
-	local titlePadding = 10
-	local titleHeight = titleEnabled and (titleSize + titlePadding * 2) or 0
-	local totalHeight = imageSize.Y.Offset + (titleEnabled and titleHeight or 0) + 20
-	local ImageFrame = Linux.Instance("Frame", {
-		Parent = targetContainer,
-		BackgroundColor3 = backgroundColor,
-		BackgroundTransparency = backgroundTransparency,
-		BorderColor3 = Color3.fromRGB(39, 39, 42),
-		BorderSizePixel = 0,
-		Size = UDim2.new(1, 0, 0, totalHeight),
-		ZIndex = 1,
-		LayoutOrder = currentElementOrder
-	})
-	Linux.Instance("UICorner", {
-		Parent = ImageFrame,
-		CornerRadius = UDim.new(0, cornerRadius)
-	})
-	Linux.Instance("UIPadding", {
-		Parent = ImageFrame,
-		PaddingLeft = UDim.new(0, 10),
-		PaddingRight = UDim.new(0, 10),
-		PaddingTop = UDim.new(0, 10),
-		PaddingBottom = UDim.new(0, 10)
-	})
-	local TitleLabel = nil
-	if titleEnabled then
-		TitleLabel = Linux.Instance("TextLabel", {
-			Parent = ImageFrame,
-			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0, titleSize),
-			Position = titlePosition == "Top" and UDim2.new(0, 0, 0, 0) or UDim2.new(0, 0, 1, -(titleSize + titlePadding)),
-			Font = Enum.Font.GothamBold,
-			Text = titleText,
-			TextColor3 = titleColor,
-			TextSize = titleSize,
-			TextXAlignment = config.TitleAlignment == "Center" and Enum.TextXAlignment.Center or (config.TitleAlignment == "Right" and Enum.TextXAlignment.Right or Enum.TextXAlignment.Left),
-			TextYAlignment = Enum.TextYAlignment.Center,
-			ZIndex = 3
-		})
-		if config.TitleTranslationKey then
-			TitleLabel.Text = Linux.Translate(config.TitleTranslationKey)
-			Linux.RegisterTranslatableElement(TitleLabel, config.TitleTranslationKey, "Text", nil, nil, nil)
-		end
-		if config.TitleGradient and config.TitleGradient.Enabled then
-			local titleGradient = Linux.Instance("UIGradient", {
-				Parent = TitleLabel,
-				Color = config.TitleGradient.Color or ColorSequence.new{
-					ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-					ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 150, 160))
-				},
-				Rotation = config.TitleGradient.Rotation or 0
-			})
-		end
-	end
-	local imageYPosition = titleEnabled and (titlePosition == "Top" and (titleSize + titlePadding) or 0) or 0
-	local ImageLabel = Linux.Instance("ImageLabel", {
-		Parent = ImageFrame,
-		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
-		BackgroundTransparency = config.ImageBackgroundTransparency or 0.5,
-		BorderColor3 = Color3.fromRGB(60, 60, 70),
-		BorderSizePixel = config.ImageBorderSize or 1,
-		Size = imageSize,
-		Position = UDim2.new(0, 0, 0, imageYPosition),
-		Image = imageId,
-		ImageColor3 = config.ImageColor or Color3.fromRGB(255, 255, 255),
-		ScaleType = config.ScaleType or Enum.ScaleType.Fit,
-		ImageTransparency = config.ImageTransparency or 0,
-		ZIndex = 2
-	})
-	Linux.Instance("UICorner", {
-		Parent = ImageLabel,
-		CornerRadius = UDim.new(0, config.ImageCornerRadius or 4)
-	})
-	if config.ImageGradient and config.ImageGradient.Enabled then
-		local imageGradient = Linux.Instance("UIGradient", {
-			Parent = ImageLabel,
-			Color = config.ImageGradient.Color or ColorSequence.new{
-				ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
-				ColorSequenceKeypoint.new(1, Color3.fromRGB(200, 200, 200))
-			},
-			Rotation = config.ImageGradient.Rotation or 0
-		})
-	end
-	if config.ImageStroke then
-		Linux.Instance("UIStroke", {
-			Parent = ImageLabel,
-			Color = config.ImageStroke.Color or Color3.fromRGB(100, 100, 110),
-			Thickness = config.ImageStroke.Thickness or 2,
-			Transparency = config.ImageStroke.Transparency or 0
-		})
-	end
-	local function SetImage(newImageId)
-		ImageLabel.Image = newImageId
-	end
-	local function SetSize(newSize)
-		imageSize = newSize
-		ImageLabel.Size = newSize
-		totalHeight = imageSize.Y.Offset + (titleEnabled and titleHeight or 0) + 20
-		ImageFrame.Size = UDim2.new(1, 0, 0, totalHeight)
-	end
-	local function SetTitle(newTitle)
-		if TitleLabel then
-			TitleLabel.Text = tostring(newTitle)
-		end
-	end
-	local function SetTitleColor(newColor)
-		if TitleLabel then
-			TitleLabel.TextColor3 = newColor
-		end
-	end
-	local function SetImageColor(newColor)
-		ImageLabel.ImageColor3 = newColor
-	end
-	local function SetImageTransparency(newTransparency)
-		ImageLabel.ImageTransparency = math.clamp(newTransparency, 0, 1)
-	end
-	targetContainer.CanvasPosition = Vector2.new(0, 0)
-	local element = {
-		Type = "Image",
-		Name = config.Name or "Image",
-		Instance = ImageFrame
-	}
-	table.insert(Tabs[tabIndex].Elements, element)
-	table.insert(AllElements, { Tab = tabIndex, Element = element })
-	globalConnectionManager:elementLoaded()
-	CheckEmptyState()
-	return {
-		Instance = ImageFrame,
-		ImageLabel = ImageLabel,
-		TitleLabel = TitleLabel,
-		SetImage = SetImage,
-		SetSize = SetSize,
-		SetTitle = SetTitle,
-		SetTitleColor = SetTitleColor,
-		SetImageColor = SetImageColor,
-		SetImageTransparency = SetImageTransparency
-	}
+return {
+Instance = ParagraphFrame,
+SetTitle = SetTitle,
+SetContent = SetContent
+}
 end
 function TabElements.ColorPicker(config)
 local targetContainer, targetListLayout = getTargetContainer()
